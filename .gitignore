@@ -1,0 +1,9 @@
+# LaTeX stuff
+*.tex
+*.aux
+*.log
+*.pdf
+
+# Data
+*.csv
+*.jld
