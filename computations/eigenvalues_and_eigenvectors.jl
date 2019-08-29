@@ -7,7 +7,7 @@
 using LinearAlgebra
 using JLD, Printf
 
-include("../lib/moebius.jl")
+include("../src/moebius.jl")
 
 # Setup files
 BUILD_DIR        = "build" # if you edit this you have to change Makefile too

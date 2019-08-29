@@ -7,7 +7,7 @@ using Test
 using Cubature, LinearAlgebra
 using MathieuFunctions
 
-include("../lib/moebius.jl")
+include("../src/moebius.jl")
 
 include("basis.jl")
 include("matrix.jl")

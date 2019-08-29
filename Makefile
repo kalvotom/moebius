@@ -19,5 +19,6 @@ pdfs:
 	cd build; lualatex --interaction=batchmode fig_ratio.tex
 	cd build; lualatex --interaction=batchmode fig_diff_ratio.tex
 
-test:
+tests:
 	julia --project=@. tests/runtests.jl
+

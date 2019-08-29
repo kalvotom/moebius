@@ -6,7 +6,7 @@
 using LinearAlgebra, GenericSVD
 using JLD, CSV, DataFrames
 
-include("../lib/moebius.jl")
+include("../src/moebius.jl")
 
 # Setup files
 BUILD_DIR    = "build" # if you edit this you have to change Makefile too
