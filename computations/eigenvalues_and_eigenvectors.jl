@@ -9,23 +9,28 @@ using JLD, Printf
 
 include("../src/moebius.jl")
 
-# Setup files
-BUILD_DIR        = "build" # if you edit this you have to change Makefile too
-MATRIX_CACHE     = joinpath(BUILD_DIR, "matrix.jld")
-TABLE_OF_RESULTS = joinpath(BUILD_DIR, "results.tex")
-PICTURE_2D       = j -> joinpath(BUILD_DIR, "eigenvector_2d_$j.tex")
-PICTURE_3D       = j -> joinpath(BUILD_DIR, "eigenvector_3d_$j.tex")
+#
+# Configuration: defined in `example*.jl`
+#
 
+# Setup files
+# BUILD_DIR        = "build" # if you edit this you have to change Makefile too
+# MATRIX_CACHE     = joinpath(BUILD_DIR, "matrix.jld")
+# TABLE_OF_RESULTS = joinpath(BUILD_DIR, "results.tex")
+# PICTURE_2D       = j -> joinpath(BUILD_DIR, "eigenvector_2d_$j.tex")
+# PICTURE_3D       = j -> joinpath(BUILD_DIR, "eigenvector_3d_$j.tex")
+
+# Setup computation parameters
+# SHOW_RESULTS = 20
+# a    = 1.3
+# L    = 18.0
+# R    = L / 2pi
+# maxE = 40
+
+# create the output directory
 if !isdir(BUILD_DIR)
   mkdir(BUILD_DIR)
 end
-
-# Setup parameters
-SHOW_RESULTS = 20
-a    = 1.3
-L    = 18.0
-R    = L / 2pi
-maxE = 40
 
 #
 # The actual computation
@@ -48,10 +53,13 @@ eigf = eigen(Symmetric(m))
 eves = eigf.vectors
 evas = eigf.values
 
-@info "Writing out the table of results ($TABLE_OF_RESULTS)..."
+@info "Writing out the LaTeX table of results ($TABLE_OF_RESULTS)..."
 if N < SHOW_RESULTS
-  error("The cut off basis is too small to obtain required $SHOW_RESULTS eigenvalues!")
+  error("The cut off basis is too small to obtain required number of eigenvalues ($N < $SHOW_RESULTS)!")
 end
+
+fake_evas = Moebius.fake_eigenvalues(R, a, maxE)
+nsf_evas  = Moebius.not_so_fake_eigenvalues(R, a, maxE)
 
 open(TABLE_OF_RESULTS, "w") do f
   for j in 1:SHOW_RESULTS
@@ -60,6 +68,10 @@ open(TABLE_OF_RESULTS, "w") do f
     print(f, evas[j])
     print(f, " & ")
     print(f, Moebius.getResidue(eves[:, j], evas[j], indices, R, a))
+    print(f, " & ")
+    print(f, nsf_evas[j])
+    print(f, " & ")
+    print(f, fake_evas[j])
     print(f, "\\\\\n")
   end
 end

@@ -6,6 +6,14 @@
 using  MathieuFunctions
 
 """
+  fake_eigenvalues(R, a, maxE)
+
+Eigenvalues of the fake model, i.e. the flat Möbius strip of width ``2a``
+and length ``R``, smaller then ``maxE``. The spectrum is explicitely given by
+
+```math
+  \\Big\\{ \\big(m/2R\\big)^2 + \\big(n\\pi/2a\\big)^2 \\,\\Big\\vert\\, m\\in\\mathbb{Z}, \\ n\\in\\mathbb{N}^*, \\ m+n \\ \\text{is odd} \\Big}.
+```
 """
 function fake_eigenvalues(R, a, maxE)
   vals = []
@@ -35,6 +43,10 @@ function fake_eigenvalues(R, a, maxE)
 end
 
 """
+  partA(R, a, maxE; kmax=20, kadd=5)
+
+Compute the part of the not-so-fake spectrum originating from the
+Mathieu characteristic value ``a_m``.
 """
 function partA(R, a, maxE; kmax=20, kadd=5)
   # This is certainly sub-optimal.
@@ -69,6 +81,10 @@ function partA(R, a, maxE; kmax=20, kadd=5)
 end
 
 """
+  partB(R, a, maxE; kmax=20, kadd=5)
+
+Compute the part of the not-so-fake spectrum originating from the
+Mathieu characteristic value ``b_m``.
 """
 function partB(R, a, maxE; kmax=20, kadd=5)
   # This is certainly sub-optimal.
@@ -103,6 +119,20 @@ function partB(R, a, maxE; kmax=20, kadd=5)
 end
 
 """
+  not_so_fake_eigenvalues(R, a, maxE)
+
+Eigenvalues of the not-so-fake model, i.e. the flat Möbius strip
+with effective potential ``V_{\\text{eff}}(s,t) = -\\frac{1}{8R^2}\\cos(s/R)``
+of width ``2a`` and length ``R``, smaller then ``maxE``. The spectrum
+is explicitely given by
+
+```math
+  \\Big\\{ (1/2R)^2 a_m(-1/4) + (n\\pi/2a)^2 \\,\\Big\\vert\\, m\\in\\mathbb{N}, \\ n\\in\\mathbb{N}^*, \\ m+n \\ \\text{is odd} \\Big}
+  \\cup
+  \\Big\\{ (1/2R)^2 b_m(-1/4) + (n\\pi/2a)^2 \\,\\Big\\vert\\, m\\in\\mathbb{N}^*, \\ n\\in\\mathbb{N}^*, \\ m+n \\ \\text{is odd} \\Big},
+```
+
+where ``a_m`` and ``b_m`` are the Mathieu characteristic values.
 """
 function not_so_fake_eigenvalues(R, a, maxE)
   vals = vcat(partA(R, a, maxE), partB(R, a, maxE))

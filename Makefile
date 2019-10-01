@@ -9,7 +9,7 @@ all: run pdfs
 
 run:
 	julia --project=@. computations/limit.jl
-	julia --project=@. computations/eigenvalues_and_eigenvectors.jl
+	julia --project=@. computations/example01.jl
 
 SRC=$(notdir $(wildcard $(BUILD)/eigen*.tex))
 
