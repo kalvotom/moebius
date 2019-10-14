@@ -5,7 +5,7 @@
 
 using Test
 using Cubature, LinearAlgebra
-using MathieuFunctions
+using GSL # for Mathieu functions
 
 include("../src/moebius.jl")
 

@@ -79,3 +79,41 @@ function basis_indices(R, maxE)
   @info "Using $(size(indices)[1]) basis elements."
   return indices
 end
+
+"""
+  φ1(m, R)
+
+
+"""
+function φ1(m, R)
+  return s -> GSL.sf_mathieu_se(m, -1/4, s / 2R) / sqrt(2*pi*R)
+end
+
+"""
+  φ2(m, R)
+
+ 
+"""
+function φ2(m, R)
+  return s -> GSL.sf_mathieu_ce(m, -1/4, s / 2R) / sqrt(2*pi*R)
+end
+
+"""
+  ϕ1(mn, R)
+
+
+"""
+function ϕ1(mn, R)
+  m = mn[1]; n = mn[2]
+  return x -> sqrt(2) * φ1(m, R)(x[1]) * χ(n)(x[2])
+end
+
+"""
+  ϕ2(mn, R)
+
+ 
+"""
+function ϕ2(mn, R)
+  m = mn[1]; n = mn[2]
+  return x -> sqrt(2) * φ2(m, R)(x[1]) * χ(n)(x[2])
+end
