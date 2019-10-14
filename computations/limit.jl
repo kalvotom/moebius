@@ -23,7 +23,7 @@ SHOW_RESULTS = 20
 
 @info "Computing dependence on 'a'..."
 
-# Mobius strip parameters
+# Möbius strip parameters
 L    = 18.0
 R    = L / (2pi)
 maxE = 20
@@ -39,7 +39,7 @@ a    = amax
 indices = Moebius.basis_indices(R, maxE)
 N       = size(indices)[1]
 
-# Containers
+# Containers holding the results
 as        = zeros(anum)
 big_evals = big.(zeros(anum, N))
 
@@ -63,7 +63,7 @@ for j in 1:anum
   big_evals[j, :] = sort(svdvals(big.(m)))
   # Note: We use `svdvals` functions from the GenericSVD package
   # because for small `a` the eigenvalues are pairwise close to each
-  # other and the usual Julia eigenvalue finding method gives
+  # other and the generic Julia eigenvalue finding method gives
   # incorrect results (probably due to the 64 bit floating point
   # arithmetic).
 
@@ -77,7 +77,7 @@ evals = convert(Array{Float64,2}, big_evals)
 CSV.write(joinpath(BUILD_DIR, "limit_as.csv"), DataFrame(a = as))
 CSV.write(joinpath(BUILD_DIR, "limit_evals.csv"), DataFrame(evals))
 
-@info "Data export (ratios)..."
+@info "Data export (ratios not-so-fake / true)..."
 
 # Prepare the data frame
 df = DataFrame()
@@ -97,7 +97,7 @@ end
 
 CSV.write(joinpath(BUILD_DIR, "ratios.csv"), df)
 
-@info "Data export (ratios of diffs)..."
+@info "Data export (ratios of differences |not-so-fake - true| / a)..."
 
 # Prepare the data frame
 df = DataFrame()
