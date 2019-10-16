@@ -20,6 +20,7 @@ end
 # Setup computations
 # If you modify this you have to change `build/fig_*ratio.tex`!
 SHOW_RESULTS = 18
+SHOW_EIGENVECTORS = 5
 
 @info "Computing dependence on 'a'..."
 
@@ -42,7 +43,7 @@ N       = size(indices)[1]
 # Containers holding the results
 as        = zeros(anum)
 big_evals = big.(zeros(anum, N))
-evs_conv  = zeros(anum, SHOW_RESULTS)
+evs_conv  = zeros(anum, SHOW_EIGENVECTORS)
 
 for j in 1:anum
   global a, as, big_evals
@@ -69,29 +70,34 @@ for j in 1:anum
   # arithmetic).
 
   # Convergence of eigenvectors to the eigenvectors of the not-so-fake model
-  eigenpairs = Moebius.not_so_fake_eigenpairs(R, a, 1.2*big_evals[j, SHOW_RESULTS])
+  eigenpairs = Moebius.not_so_fake_eigenpairs(R, a, 1.2*big_evals[j, SHOW_EIGENVECTORS])
   svdfact = svd(big.(m))
   shuffle_pair = false
 
-  for k in 1:SHOW_RESULTS
+  for k in 1:SHOW_EIGENVECTORS
     v = Float64.(svdfact.U[:, N+1-k])
-    # e = svdfact.S[N+1-k]
+    e = svdfact.S[N+1-k]
     # println(norm(m * v - e * v, Inf))
     func1 = x -> Moebius.getValue(v, indices, R, x)
     evs_conv[j, k] = Moebius.compareEigenvectors(func1, eigenpairs[k][2], R)
 
     if evs_conv[j, k] > 0.1
-      if shuffle_pair
-        # this is the second one, you should compare this with the previous one
-        println("Second one of the suspicious pair!")
-        evs_conv[j, k] = Moebius.compareEigenvectors(func1, eigenpairs[k-1][2], R)
-        shuffle_pair = false
-      else
-        # this is the first one, you should compare this with the next one
-        println("First one of the suspicious pair!")
-        evs_conv[j, k] = Moebius.compareEigenvectors(func1, eigenpairs[k+1][2], R)
-        shuffle_pair = true
-      end
+      println("This sucks! $k")
+      # if shuffle_pair
+      #   # this is the second one, you should compare this with the previous one
+      #   println("Second one of the suspicious pair ($k)!")
+      #   println("true: $e")
+      #   println("nsf:  $(eigenpairs[k][1])")
+      #   evs_conv[j, k] = Moebius.compareEigenvectors(func1, eigenpairs[k-1][2], R)
+      #   shuffle_pair = false
+      # else
+      #   # this is the first one, you should compare this with the next one
+      #   println("First one of the suspicious pair ($k)!")
+      #   println("true: $e")
+      #   println("nsf:  $(eigenpairs[k][1])")
+      #   evs_conv[j, k] = Moebius.compareEigenvectors(func1, eigenpairs[k+1][2], R)
+      #   shuffle_pair = true
+      # end
     end
 
     println(evs_conv[j, k])
@@ -109,7 +115,7 @@ CSV.write(joinpath(BUILD_DIR, "limit_evals.csv"), DataFrame(evals))
 
 @info "Data export eigenvectors convergence..."
 
-CSV.write(joinpath(BUILD_DIR, "limit_evectors.csv"), DataFrame(hcat(evals, evs_conv)))
+CSV.write(joinpath(BUILD_DIR, "limit_evectors.csv"), DataFrame(hcat(as, evs_conv)))
 
 @info "Data export (ratios not-so-fake / true)..."
 
@@ -142,10 +148,7 @@ end
 
 for j in 1:anum
   a = as[j]
-  println(a)
-  println(1.2 * evals[j, SHOW_RESULTS])
   nsf = Moebius.not_so_fake_eigenvalues(R, a, 1.2 * evals[j, SHOW_RESULTS])[1:SHOW_RESULTS]
-  println("Done!")
 
   for i in 1:SHOW_RESULTS
     df[j, Symbol("val$i")] = abs(nsf[i] - evals[j, i]) / a

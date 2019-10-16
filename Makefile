@@ -18,6 +18,7 @@ pdfs:
 	cp figs/fig_*.tex $(BUILD)/
 	cd build; lualatex --interaction=batchmode fig_ratio.tex
 	cd build; lualatex --interaction=batchmode fig_diff_ratio.tex
+	cd build; lualatex --interaction=batchmode fig_eigenvectors.tex
 
 tests:
 	julia --project=@. test/runtests.jl
