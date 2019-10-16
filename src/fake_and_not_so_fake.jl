@@ -43,12 +43,13 @@ function fake_eigenvalues(R, a, maxE)
 end
 
 """
-  partA(R, a, maxE; kmax=20, kadd=5)
+  partA(R, a, maxE[, eigenfunctions=false])
 
 Compute the part of the not-so-fake spectrum originating from the
-Mathieu characteristic value ``a_m``.
+Mathieu characteristic value ``a_m``. If `eigenfunctions` is set to `true`
+return corresponding eigenfunctions too.
 """
-function partA(R, a, maxE)
+function partA(R, a, maxE; eigenfunctions=false)
   # This is certainly sub-optimal.
   vals   = []
 
@@ -60,7 +61,11 @@ function partA(R, a, maxE)
   while valA(m, n) < maxE # loop over m
     while valA(m, n) < maxE # loop over n
       if isodd(m + n)
-        append!(vals, valA(m, n))
+        if eigenfunctions
+          vals = vcat(vals, (valA(m, n), ϕ2((m, n), R)))
+        else
+          append!(vals, valA(m, n))
+        end
       end
       n += 1
     end
@@ -73,12 +78,13 @@ function partA(R, a, maxE)
 end
 
 """
-  partB(R, a, maxE; kmax=20, kadd=5)
+  partB(R, a, maxE[, eigenfunctions=false])
 
 Compute the part of the not-so-fake spectrum originating from the
-Mathieu characteristic value ``b_m``.
+Mathieu characteristic value ``b_m``. If `eigenfunctions` is set to `true`
+return corresponding eigenfunctions too.
 """
-function partB(R, a, maxE)
+function partB(R, a, maxE; eigenfunctions=false)
   # This is certainly sub-optimal.
   vals   = []
 
@@ -90,7 +96,11 @@ function partB(R, a, maxE)
   while valB(m, n) < maxE # loop over m
     while valB(m, n) < maxE # loop over n
       if isodd(m + n)
-        append!(vals, valB(m, n))
+        if eigenfunctions
+          vals = vcat(vals, (valB(m, n), ϕ1((m, n), R)))
+        else
+          append!(vals, valB(m, n))
+        end
       end
       n += 1
     end
@@ -123,3 +133,12 @@ function not_so_fake_eigenvalues(R, a, maxE)
 
   return sort(vals)
 end
+
+"""
+"""
+function not_so_fake_eigenpairs(R, a, maxE)
+  vals = vcat(partA(R, a, maxE, eigenfunctions=true), partB(R, a, maxE, eigenfunctions=true))
+
+  return sort(vals, lt=(x,y)->isless(x[1], y[1]))
+end
+

@@ -151,6 +151,50 @@ function getResidue(eigenVector, eigenValue, indices, R, a)
 end
 
 """
+  compareEigenvectors(f1, f2, R)
+
+Compute ``L^2`` norm of `f1-f2`. `f1` is the result of our numerical
+computation it is not expected to be normalized. `f2` is the normalized
+eigenvector of the not-so-fake model.
+
+This computation is tricky because of the possible change in sign. Also,
+due to tight clustering of pairs of eigenvalues we have to be very careful
+not to shuffle the eigenvectors. 
+"""
+function compareEigenvectors(f1, f2, R)
+  # compute the normalization
+  func = x -> f1(x)^2
+  normalization = sqrt(hcubature(func, [0., -1.0], [2*pi*R, 1.0])[1])
+
+  # attempt to heuristically align both functions
+  tries   = 21
+  aligned = 0
+  sample  = () -> [(0.25 + rand()/2)*2*pi*R, -0.7+1.4*rand()]
+
+  for j in 1:tries
+    x = sample()
+    if f1(x) * f2(x) > 0
+      aligned += 1
+    end
+  end
+
+  if aligned > 18 # sign is probably the same
+    func = x -> (f1(x) / normalization - f2(x))^2
+    return(sqrt(hcubature(func, [0., -1.0], [2*pi*R, 1.0])[1]))
+  elseif aligned < 3 # sign is probably opposite
+    func = x -> (f1(x) / normalization + f2(x))^2
+    return(sqrt(hcubature(func, [0., -1.0], [2*pi*R, 1.0])[1]))
+  else # not sure :-/, pick the smaller one...
+    func = x -> (f1(x) / normalization - f2(x))^2
+    a = sqrt(hcubature(func, [0., -1.0], [2*pi*R, 1.0])[1])
+    func = x -> (f1(x) / normalization + f2(x))^2
+    b = sqrt(hcubature(func, [0., -1.0], [2*pi*R, 1.0])[1])
+    return min(a, b)
+  end
+end
+
+
+"""
 """
 function plotData(eigenVector, indices, R, a, width=120, height=80)
   du = 2 / (height - 1)

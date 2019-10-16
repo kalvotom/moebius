@@ -58,7 +58,7 @@ end
 end
 
 @testset "Checking orthonormality of ϕ1 ∪ ϕ2 basis..." begin
-  R = 1.3; N = 2
+  R = 1.3; N = 5
 
   basis = vcat(
     [ Moebius.ϕ1((m, n), R) for m in 1:N for n in 1:N if isodd(m+n) ],
