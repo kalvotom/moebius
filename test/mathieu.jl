@@ -1,6 +1,6 @@
 ###
 #
-# Test MathieuFunctions package against Mathematica.
+# Test GSL Mathieu functions against Mathematica.
 #
 
 @testset "Mathieu characteristic values..." begin
@@ -28,7 +28,7 @@
     361.00008680556886
     400.0000783208117
   ]
-  juliaA = charA(-1/4, k=0:(length(mathA)-1))
+  juliaA = [GSL.sf_mathieu_a(k, -1/4) for k in 0:(length(mathA)-1)]
 
   # Odd Mathieu characteristic values with `q = -1/4`.
   mathB = [
@@ -53,8 +53,24 @@
     361.00008680556886
     400.0000783208117
   ]
-  juliaB = charB(-1/4, k=1:length(mathB))
+  juliaB = [GSL.sf_mathieu_b(k, -1/4) for k in 1:length(mathB)]
 
   @test norm(mathA - juliaA, Inf) ≈ 0 atol=1e-12
   @test norm(mathB - juliaB, Inf) ≈ 0 atol=1e-12
+end
+
+@testset "Odd Mathieu characteristic functions: normalization" begin
+  for k in 1:6
+    func = x -> GSL.sf_mathieu_se(k, -1/4, x)^2
+    val, err = hquadrature(func, -pi, pi)
+    @test val ≈ pi
+  end
+end
+
+@testset "Even Mathieu characteristic functions: normalization" begin
+  for k in 0:5
+    func = x -> GSL.sf_mathieu_ce(k, -1/4, x)^2
+    val, err = hquadrature(func, -pi, pi)
+    @test val ≈ pi
+  end
 end

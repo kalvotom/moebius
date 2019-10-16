@@ -4,7 +4,7 @@
 #
 
 using LinearAlgebra, GenericSVD
-using JLD, CSV, DataFrames
+using JLD, CSV, DataFrames, Cubature
 
 include("../src/moebius.jl")
 
@@ -19,11 +19,11 @@ end
 
 # Setup computations
 # If you modify this you have to change `build/fig_*ratio.tex`!
-SHOW_RESULTS = 20
+SHOW_RESULTS = 18
 
 @info "Computing dependence on 'a'..."
 
-# Mobius strip parameters
+# Möbius strip parameters
 L    = 18.0
 R    = L / (2pi)
 maxE = 20
@@ -39,9 +39,10 @@ a    = amax
 indices = Moebius.basis_indices(R, maxE)
 N       = size(indices)[1]
 
-# Containers
+# Containers holding the results
 as        = zeros(anum)
 big_evals = big.(zeros(anum, N))
+evs_conv  = zeros(anum, SHOW_RESULTS)
 
 for j in 1:anum
   global a, as, big_evals
@@ -63,9 +64,38 @@ for j in 1:anum
   big_evals[j, :] = sort(svdvals(big.(m)))
   # Note: We use `svdvals` functions from the GenericSVD package
   # because for small `a` the eigenvalues are pairwise close to each
-  # other and the usual Julia eigenvalue finding method gives
+  # other and the generic Julia eigenvalue finding method gives
   # incorrect results (probably due to the 64 bit floating point
   # arithmetic).
+
+  # Convergence of eigenvectors to the eigenvectors of the not-so-fake model
+  eigenpairs = Moebius.not_so_fake_eigenpairs(R, a, 1.2*big_evals[j, SHOW_RESULTS])
+  svdfact = svd(big.(m))
+  shuffle_pair = false
+
+  for k in 1:SHOW_RESULTS
+    v = Float64.(svdfact.U[:, N+1-k])
+    # e = svdfact.S[N+1-k]
+    # println(norm(m * v - e * v, Inf))
+    func1 = x -> Moebius.getValue(v, indices, R, x)
+    evs_conv[j, k] = Moebius.compareEigenvectors(func1, eigenpairs[k][2], R)
+
+    if evs_conv[j, k] > 0.1
+      if shuffle_pair
+        # this is the second one, you should compare this with the previous one
+        println("Second one of the suspicious pair!")
+        evs_conv[j, k] = Moebius.compareEigenvectors(func1, eigenpairs[k-1][2], R)
+        shuffle_pair = false
+      else
+        # this is the first one, you should compare this with the next one
+        println("First one of the suspicious pair!")
+        evs_conv[j, k] = Moebius.compareEigenvectors(func1, eigenpairs[k+1][2], R)
+        shuffle_pair = true
+      end
+    end
+
+    println(evs_conv[j, k])
+  end
 
   a -= da
 end
@@ -77,7 +107,11 @@ evals = convert(Array{Float64,2}, big_evals)
 CSV.write(joinpath(BUILD_DIR, "limit_as.csv"), DataFrame(a = as))
 CSV.write(joinpath(BUILD_DIR, "limit_evals.csv"), DataFrame(evals))
 
-@info "Data export (ratios)..."
+@info "Data export eigenvectors convergence..."
+
+CSV.write(joinpath(BUILD_DIR, "limit_evectors.csv"), DataFrame(hcat(evals, evs_conv)))
+
+@info "Data export (ratios not-so-fake / true)..."
 
 # Prepare the data frame
 df = DataFrame()
@@ -97,7 +131,7 @@ end
 
 CSV.write(joinpath(BUILD_DIR, "ratios.csv"), df)
 
-@info "Data export (ratios of diffs)..."
+@info "Data export (ratios of differences |not-so-fake - true| / a)..."
 
 # Prepare the data frame
 df = DataFrame()
