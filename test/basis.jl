@@ -58,7 +58,7 @@ end
 end
 
 @testset "Checking orthonormality of ϕ1 ∪ ϕ2 basis..." begin
-  R = 1.3; N = 5
+  R = 1.3; N = 7
 
   basis = vcat(
     [ Moebius.ϕ1((m, n), R) for m in 1:N for n in 1:N if isodd(m+n) ],
@@ -72,10 +72,10 @@ end
   for m in 1:bN
     for n in 1:bN
       func = x -> basis[m](x) * basis[n](x)
-      (val, err) = hcubature(func, [0.0, -1.0], [2.0*pi*R, 1.0], abstol=1e-10)
+      (val, err) = hcubature(func, [0.0, -1.0], [2.0*pi*R, 1.0], abstol=1e-4)
       matB[m, n] = val
     end
   end
 
-  @test norm(matB - matI, Inf) ≈ 0.0 atol=1e-10
+  @test norm(matB - matI, Inf) ≈ 0.0 atol=1e-3
 end
