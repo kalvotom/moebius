@@ -69,20 +69,24 @@ for j in 1:anum
   # incorrect results (probably due to the 64 bit floating point
   # arithmetic).
 
-  # Convergence of eigenvectors to the eigenvectors of the not-so-fake model
+  # Convergence of true eigenvectors to the eigenvectors
+  # of the not-so-fake model
   eigenpairs = Moebius.not_so_fake_eigenpairs(R, a, 1.2*big_evals[j, SHOW_EIGENVECTORS])
   svdfact = svd(big.(m))
-  shuffle_pair = false
+  # shuffle_pair = false # see below
 
   for k in 1:SHOW_EIGENVECTORS
     v = Float64.(svdfact.U[:, N+1-k])
     e = svdfact.S[N+1-k]
-    # println(norm(m * v - e * v, Inf))
     func1 = x -> Moebius.getValue(v, indices, R, x)
     evs_conv[j, k] = Moebius.compareEigenvectors(func1, eigenpairs[k][2], R)
 
     if evs_conv[j, k] > 0.1
-      println("This sucks! $k")
+      println("Suspicious result for k=($k)!")
+      #
+      # Disabled debugging attempt to take care of almost
+      # degenerate eigenvalues.
+      #
       # if shuffle_pair
       #   # this is the second one, you should compare this with the previous one
       #   println("Second one of the suspicious pair ($k)!")
@@ -99,8 +103,6 @@ for j in 1:anum
       #   shuffle_pair = true
       # end
     end
-
-    println(evs_conv[j, k])
   end
 
   a -= da
@@ -113,7 +115,7 @@ evals = convert(Array{Float64,2}, big_evals)
 CSV.write(joinpath(BUILD_DIR, "limit_as.csv"), DataFrame(a = as))
 CSV.write(joinpath(BUILD_DIR, "limit_evals.csv"), DataFrame(evals))
 
-@info "Data export eigenvectors convergence..."
+@info "Data export (eigenvectors convergence)..."
 
 CSV.write(joinpath(BUILD_DIR, "limit_evectors.csv"), DataFrame(hcat(as, evs_conv)))
 

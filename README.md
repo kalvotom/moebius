@@ -5,7 +5,8 @@
 
 Tomáš Kalvoda, David Krejčiřík, Kateřina Zahradová
 
+![Mobius strip](images/moebius.png)
+
 ## Usage
 
 ## Contact
-

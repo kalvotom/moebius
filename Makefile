@@ -10,8 +10,9 @@ all: run pdfs
 run:
 	julia --project=@. computations/limit.jl
 	julia --project=@. computations/example01.jl
+	julia --project=@. computations/example02.jl
 
-SRC=$(notdir $(wildcard $(BUILD)/eigen*.tex))
+SRC=$(notdir $(wildcard $(BUILD)/ex*eigen*.tex))
 
 pdfs:
 	$(foreach file, $(SRC), cd build; lualatex --interaction=batchmode $(file))
@@ -22,4 +23,3 @@ pdfs:
 
 tests:
 	julia --project=@. test/runtests.jl
-

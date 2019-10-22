@@ -1,0 +1,20 @@
+\documentclass{standalone}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
+\begin{document}
+\begin{tikzpicture}
+  \begin{axis}[
+      xlabel={$a$},
+      ylabel={$\lambda^{(\mathrm{not-so-fake})}_n(a) / \tilde{\lambda}^{(\mathrm{true})}_n(a)$},
+      xmajorgrids, ymajorgrids,
+      cycle list name=color list,
+      thick
+    ]
+    \addplot+[mark=*, mark size=0.5pt] table [x=x1, y=x2, col sep=comma, ignore chars={"}] {limit_evectors.csv};
+    \addplot+[mark=*, mark size=0.5pt] table [x=x1, y=x3, col sep=comma, ignore chars={"}] {limit_evectors.csv};
+    \addplot+[mark=*, mark size=0.5pt] table [x=x1, y=x4, col sep=comma, ignore chars={"}] {limit_evectors.csv};
+    \addplot+[mark=*, mark size=0.5pt] table [x=x1, y=x5, col sep=comma, ignore chars={"}] {limit_evectors.csv};
+    \addplot+[mark=*, mark size=0.5pt] table [x=x1, y=x6, col sep=comma, ignore chars={"}] {limit_evectors.csv};
+  \end{axis}
+\end{tikzpicture}
+\end{document}
