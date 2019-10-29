@@ -7,3 +7,5 @@
 # Data
 *.csv
 *.jld
+
+build

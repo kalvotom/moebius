@@ -15,11 +15,12 @@ run:
 SRC=$(notdir $(wildcard $(BUILD)/ex*eigen*.tex))
 
 pdfs:
-	$(foreach file, $(SRC), cd build; lualatex --interaction=batchmode $(file))
+	$(foreach file, $(SRC), cd $(BUILD); lualatex --interaction=batchmode $(file))
 	cp figs/fig_*.tex $(BUILD)/
-	cd build; lualatex --interaction=batchmode fig_ratio.tex
-	cd build; lualatex --interaction=batchmode fig_diff_ratio.tex
-	cd build; lualatex --interaction=batchmode fig_eigenvectors.tex
+	cd $(BUILD) && lualatex --interaction=batchmode fig_ratio.tex
+	cd $(BUILD) && lualatex --interaction=batchmode fig_diff_ratio.tex
+	cd $(BUILD) && lualatex --interaction=batchmode fig_diff_ratio_annotated.tex
+	cd $(BUILD) && lualatex --interaction=batchmode fig_eigenvectors.tex
 
 tests:
 	julia --project=@. test/runtests.jl

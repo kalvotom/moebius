@@ -1,6 +1,6 @@
 ##
 #
-# Experiment with the width of the Möbius string going to zero.
+# Experiment with the width of the Möbius strip going to zero.
 #
 
 using LinearAlgebra, GenericSVD
@@ -17,17 +17,17 @@ if !isdir(BUILD_DIR)
   mkdir(BUILD_DIR)
 end
 
-# Setup computations
-# If you modify this you have to change `build/fig_*ratio.tex`!
-SHOW_RESULTS = 18
-SHOW_EIGENVECTORS = 5
+# Setup computation parameters
+# If you modify this you have to change `build/fig_*ratio*.tex`!
+SHOW_RESULTS = 20
+SHOW_EIGENVECTORS = 7
 
 @info "Computing dependence on 'a'..."
 
 # Möbius strip parameters
 L    = 18.0
 R    = L / (2pi)
-maxE = 20
+maxE = 30
 
 # Thickness
 amax = 1.5
@@ -73,7 +73,7 @@ for j in 1:anum
   # of the not-so-fake model
   eigenpairs = Moebius.not_so_fake_eigenpairs(R, a, 1.2*big_evals[j, SHOW_EIGENVECTORS])
   svdfact = svd(big.(m))
-  # shuffle_pair = false # see below
+  shuffle_pair = false # see below
 
   for k in 1:SHOW_EIGENVECTORS
     v = Float64.(svdfact.U[:, N+1-k])
@@ -82,31 +82,35 @@ for j in 1:anum
     evs_conv[j, k] = Moebius.compareEigenvectors(func1, eigenpairs[k][2], R)
 
     if evs_conv[j, k] > 0.1
-      println("Suspicious result for k=($k)!")
+      println("Suspicious result for k=$(k)!")
       #
       # Disabled debugging attempt to take care of almost
       # degenerate eigenvalues.
       #
-      # if shuffle_pair
-      #   # this is the second one, you should compare this with the previous one
-      #   println("Second one of the suspicious pair ($k)!")
-      #   println("true: $e")
-      #   println("nsf:  $(eigenpairs[k][1])")
-      #   evs_conv[j, k] = Moebius.compareEigenvectors(func1, eigenpairs[k-1][2], R)
-      #   shuffle_pair = false
-      # else
-      #   # this is the first one, you should compare this with the next one
-      #   println("First one of the suspicious pair ($k)!")
-      #   println("true: $e")
-      #   println("nsf:  $(eigenpairs[k][1])")
-      #   evs_conv[j, k] = Moebius.compareEigenvectors(func1, eigenpairs[k+1][2], R)
-      #   shuffle_pair = true
-      # end
+      if shuffle_pair
+        # this is the second one, you should compare this with the previous one
+        println("Second one of the suspicious pair ($k)!")
+        println("true: $e")
+        println("nsf:  $(eigenpairs[k][1])")
+        evs_conv[j, k] = Moebius.compareEigenvectors(func1, eigenpairs[k-1][2], R)
+        shuffle_pair = false
+      else
+        # this is the first one, you should compare this with the next one
+        println("First one of the suspicious pair ($k)!")
+        println("true: $e")
+        println("nsf:  $(eigenpairs[k][1])")
+        evs_conv[j, k] = Moebius.compareEigenvectors(func1, eigenpairs[k+1][2], R)
+        shuffle_pair = true
+      end
     end
   end
 
   a -= da
 end
+
+#
+# Post computation jobs...
+#
 
 @info "Data export (raw)..."
 
@@ -114,6 +118,7 @@ evals = convert(Array{Float64,2}, big_evals)
 
 CSV.write(joinpath(BUILD_DIR, "limit_as.csv"), DataFrame(a = as))
 CSV.write(joinpath(BUILD_DIR, "limit_evals.csv"), DataFrame(evals))
+# export concat version too
 
 @info "Data export (eigenvectors convergence)..."
 

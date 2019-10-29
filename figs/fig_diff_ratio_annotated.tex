@@ -1,0 +1,47 @@
+\documentclass{standalone}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
+\begin{document}
+\begin{tikzpicture}
+  \begin{axis}[
+      xlabel={$a$},
+      ylabel={$\Big|\lambda^{(\mathrm{not-so-fake})}_n(a) - \tilde{\lambda}^{(\mathrm{true})}_n(a)\Big| / a$},
+      xmajorgrids, ymajorgrids,
+      cycle list name=color list,
+      thick,
+      legend pos=outer north east,
+    ]
+    \addplot+[mark=*, mark size=0.5pt] table [x=a, y=val1, col sep=comma, ignore chars={"}] {diff_ratios.csv};
+    \addlegendentry{$n = 1$}
+    \addplot+[mark=*, mark size=0.5pt] table [x=a, y=val2, col sep=comma, ignore chars={"}] {diff_ratios.csv};
+    % \addplot+[mark=*, mark size=0.5pt] table [x=a, y=val3, col sep=comma, ignore chars={"}] {diff_ratios.csv};
+    \addlegendentry{$n = 2,3$}
+    \addplot+[mark=*, mark size=0.5pt] table [x=a, y=val4, col sep=comma, ignore chars={"}] {diff_ratios.csv};
+    % \addplot+[mark=*, mark size=0.5pt] table [x=a, y=val5, col sep=comma, ignore chars={"}] {diff_ratios.csv};
+    \addlegendentry{$n = 4,5$}
+    \addplot+[mark=*, mark size=0.5pt] table [x=a, y=val6, col sep=comma, ignore chars={"}] {diff_ratios.csv};
+    % \addplot+[mark=*, mark size=0.5pt] table [x=a, y=val7, col sep=comma, ignore chars={"}] {diff_ratios.csv};
+    \addlegendentry{$n = 6,7$}
+    \addplot+[mark=*, mark size=0.5pt] table [x=a, y=val8, col sep=comma, ignore chars={"}] {diff_ratios.csv};
+    % \addplot+[mark=*, mark size=0.5pt] table [x=a, y=val9, col sep=comma, ignore chars={"}] {diff_ratios.csv};
+    \addlegendentry{$n = 8,9$}
+    \addplot+[mark=*, mark size=0.5pt] table [x=a, y=val10, col sep=comma, ignore chars={"}] {diff_ratios.csv};
+    % \addplot+[mark=*, mark size=0.5pt] table [x=a, y=val11, col sep=comma, ignore chars={"}] {diff_ratios.csv};
+    \addlegendentry{$n = 10,11$}
+    \addplot+[mark=*, mark size=0.5pt] table [x=a, y=val12, col sep=comma, ignore chars={"}] {diff_ratios.csv};
+    % \addplot+[mark=*, mark size=0.5pt] table [x=a, y=val13, col sep=comma, ignore chars={"}] {diff_ratios.csv};
+    \addlegendentry{$n = 12,13$}
+    \addplot+[mark=*, mark size=0.5pt] table [x=a, y=val14, col sep=comma, ignore chars={"}] {diff_ratios.csv};
+    % \addplot+[mark=*, mark size=0.5pt] table [x=a, y=val15, col sep=comma, ignore chars={"}] {diff_ratios.csv};
+    \addlegendentry{$n = 14,15$}
+    \addplot+[mark=*, mark size=0.5pt] table [x=a, y=val16, col sep=comma, ignore chars={"}] {diff_ratios.csv};
+    % \addplot+[mark=*, mark size=0.5pt] table [x=a, y=val17, col sep=comma, ignore chars={"}] {diff_ratios.csv};
+    \addlegendentry{$n = 16, 17$}
+    \addplot+[mark=*, mark size=0.5pt] table [x=a, y=val18, col sep=comma, ignore chars={"}] {diff_ratios.csv};
+    % \addplot+[mark=*, mark size=0.5pt] table [x=a, y=val19, col sep=comma, ignore chars={"}] {diff_ratios.csv};
+    \addlegendentry{$n = 18, 19$}
+    \addplot+[mark=*, mark size=0.5pt] table [x=a, y=val20, col sep=comma, ignore chars={"}] {diff_ratios.csv};
+    \addlegendentry{$n = 20, 21$}
+  \end{axis}
+\end{tikzpicture}
+\end{document}
