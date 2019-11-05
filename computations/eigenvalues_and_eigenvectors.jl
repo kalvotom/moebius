@@ -82,7 +82,7 @@ for j in 1:SHOW_RESULTS
   Moebius.data_plot(
     Moebius.plotData(eves[:, j], indices, R, a),
     PICTURE_2D(j),
-    title="\$\\tilde{\\lambda}^{(\\mathrm{true})}_{$(j)} = $(@sprintf "%.6f" evas[j])\$"
+    title="\$\\tilde{\\lambda}^{(\\mathrm{true})}_{$(j)} \\approx $(@sprintf "%.8f" evas[j])\$"
   )
 end
 
@@ -92,6 +92,6 @@ for j in 1:SHOW_RESULTS
   Moebius.data_plot_3d(
     Moebius.plotData(eves[:, j], indices, R, a), R, a,
     PICTURE_3D(j),
-    title="\$\\tilde{\\lambda}^{(\\mathrm{true})}_{$(j)} = $(@sprintf "%.6f" evas[j])\$"
+    title="\$\\tilde{\\lambda}^{(\\mathrm{true})}_{$(j)} \\approx $(@sprintf "%.8f" evas[j])\$"
   )
 end

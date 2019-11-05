@@ -79,7 +79,7 @@ for j in 1:anum
     v = Float64.(svdfact.U[:, N+1-k])
     e = svdfact.S[N+1-k]
     func1 = x -> Moebius.getValue(v, indices, R, x)
-    evs_conv[j, k] = Moebius.compareEigenvectors(func1, eigenpairs[k][2], R)
+    evs_conv[j, k] = Moebius.compareEigenvectors(func1, eigenpairs[k][2], R) / a^2
 
     if evs_conv[j, k] > 0.1
       println("Suspicious result for k=$(k)!")
@@ -92,14 +92,14 @@ for j in 1:anum
         println("Second one of the suspicious pair ($k)!")
         println("true: $e")
         println("nsf:  $(eigenpairs[k][1])")
-        evs_conv[j, k] = Moebius.compareEigenvectors(func1, eigenpairs[k-1][2], R)
+        evs_conv[j, k] = Moebius.compareEigenvectors(func1, eigenpairs[k-1][2], R) / a^2
         shuffle_pair = false
       else
         # this is the first one, you should compare this with the next one
         println("First one of the suspicious pair ($k)!")
         println("true: $e")
         println("nsf:  $(eigenpairs[k][1])")
-        evs_conv[j, k] = Moebius.compareEigenvectors(func1, eigenpairs[k+1][2], R)
+        evs_conv[j, k] = Moebius.compareEigenvectors(func1, eigenpairs[k+1][2], R) / a^2
         shuffle_pair = true
       end
     end
@@ -158,7 +158,7 @@ for j in 1:anum
   nsf = Moebius.not_so_fake_eigenvalues(R, a, 1.2 * evals[j, SHOW_RESULTS])[1:SHOW_RESULTS]
 
   for i in 1:SHOW_RESULTS
-    df[j, Symbol("val$i")] = abs(nsf[i] - evals[j, i]) / a
+    df[j, Symbol("val$i")] = abs(nsf[i] - evals[j, i]) / a^2
   end
 end
 

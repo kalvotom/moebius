@@ -7,11 +7,13 @@
 
 ![Mobius strip](images/moebius.png)
 
-## Usage
+## Requirements
 
 In order to use this code you have to have [Julia](https://www.julialang.org) installed.
 The code is tested on Julia version 1.2. 
 Figures are created by powerful LaTeX [PGFPlots](https://ctan.org/pkg/pgfplots) package, so you should have working LaTeX installation and PGFPlots available.
+
+## Usage
 
 First of all clone this repository.
 In the repository directory activate the Julia project and install its dependencies, i.e. change the directory and run
@@ -20,7 +22,7 @@ In the repository directory activate the Julia project and install its dependenc
 $ julia --project=@.
 ```
 
-then activate the Package manager by pressing `]`.
+then activate the Package manager by pressing `]` in the Julia command prompt.
 Finally install dependencies
 
 ```

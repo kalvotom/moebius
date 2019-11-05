@@ -21,6 +21,7 @@ pdfs:
 	cd $(BUILD) && lualatex --interaction=batchmode fig_diff_ratio.tex
 	cd $(BUILD) && lualatex --interaction=batchmode fig_diff_ratio_annotated.tex
 	cd $(BUILD) && lualatex --interaction=batchmode fig_eigenvectors.tex
+	cd $(BUILD) && lualatex --interaction=batchmode fig_eigenvectors_annotated.tex
 
 tests:
 	julia --project=@. test/runtests.jl
